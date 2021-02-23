@@ -1,7 +1,9 @@
 ---
-title: "YOUR TURN! UPDATE THIS TITLE."
-author: "Your name"
+title: "Summary report for the `r params$species`"
+author: "Larissa Neilson"
 output: html_document
+params:
+  species: species
 ---
 
 ### Your job: create a parameterized report using data from `penguins.csv`. 
@@ -12,7 +14,39 @@ output: html_document
 
 - Create a function that will automatically render a separate report for *all species* in the data. 
 
-```{r setup, include=FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
+
+```{r}
+penguins <- read_csv("penguins.csv")
+
+species_data <- penguins %>% 
+  filter(species == params$species)
+
+ggplot(data = species_data, aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point()
+```
+
+```{r, eval = FALSE}
+render_penguins_report = function(species) {
+  rmarkdown::render(
+    input = "your_turn.Rmd", # What's the input file to render?
+    params = list(species = species), # What are the parameters?
+    output_file = paste0(species, "_report", ".html") # What should I name the output file?
+  )
+}
+
+species_name <- unique(penguins$species)
+
+for (species in species_name) {
+    render_penguins_report(species)
+}
+```
+
+
+
+
+
 
